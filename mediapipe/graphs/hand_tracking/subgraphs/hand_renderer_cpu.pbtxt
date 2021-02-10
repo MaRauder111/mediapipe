@@ -130,6 +130,41 @@ node {
   }
 }
 
+# gesture start
+
+node {
+  calculator: "HandZoomGestureRecognitionCalculator"
+  input_stream: "NORM_RECTS:multi_hand_rects"
+  output_stream: "GESTURE:zoom_gesture"
+  # node_options: {
+  #   [type.googleapis.com/mediapipe.HandZoomGestureRecognitionCalculatorOptions]: {
+  #     minZoom: 0.405845
+  #     maxZoom: 1.02777
+  #   }
+  # }
+}
+
+node {
+  calculator: "LabelsToRenderDataCalculator"
+  input_stream: "LABELS:zoom_gesture"
+  output_stream: "RENDER_DATA:zoom_render_data"
+  node_options: {
+    [type.googleapis.com/mediapipe.LabelsToRenderDataCalculatorOptions]: {
+      color { r: 0 g: 0 b: 255 }
+      thickness: 10.0
+      font_height_px: 50
+      horizontal_offset_px: 30
+      vertical_offset_px: 150
+
+      max_num_labels: 1
+      location: TOP_LEFT
+    }
+  }
+}
+
+#gesture end
+
+
 # Collects a RenderData object for each hand into a vector. Upon receiving the
 # BATCH_END timestamp, outputs the vector of RenderData at the BATCH_END
 # timestamp.
@@ -205,5 +240,6 @@ node {
   input_stream: "multi_palm_rects_render_data"
   input_stream: "handedness_render_data"
   input_stream: "VECTOR:0:multi_hand_landmarks_render_data"
+  input_stream: "zoom_render_data"
   output_stream: "IMAGE:output_image"
 }
